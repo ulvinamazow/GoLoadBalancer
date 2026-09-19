@@ -8,6 +8,7 @@ type Server struct {
 	URL           string
 	Weight        int
 	CurrentWeight int
+	Health        bool
 }
 
 type WeightedRoundRobin struct {
@@ -53,5 +54,17 @@ func (wwr *WeightedRoundRobin) NextServer() *Server {
 		bestServer.CurrentWeight -= wwr.totalWeight
 	}
 
-	return bestServer
+	if bestServer.IsHealth() == true {
+		return bestServer
+	} else {
+		return nil
+	}
+}
+
+func (server *Server) SetHealthy(status bool) {
+	server.Health = status
+}
+
+func (server *Server) IsHealth() bool {
+	return server.Health
 }
